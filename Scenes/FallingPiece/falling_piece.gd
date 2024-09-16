@@ -3,7 +3,8 @@ extends Sprite2D
 class_name FallingPiece
 signal was_cleared(type: int, was_grounded: bool)
 
-@onready var _animation_tree: FallingPieceAnimationTree = $AnimationTree
+@onready var _animation_tree: FallingPieceAnimationTree = $FallingPiece/AnimationTree
+
 var falling_tween: Tween = null
 var swapping_tween: Tween = null
 var above: FallingPiece = null
