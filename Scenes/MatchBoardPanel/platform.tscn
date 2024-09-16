@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://bii7ueeli6dfg"]
+
+[ext_resource type="Texture2D" uid="uid://dwd2aiubk8hwt" path="res://Scenes/MatchBoardPanel/Images/platform.png" id="1_g723f"]
+
+[node name="Platform" type="Sprite2D"]
+visible = false
+position = Vector2(3, 116)
+texture = ExtResource("1_g723f")
+centered = false
+offset = Vector2(2, -1)

@@ -1,0 +1,55 @@
+[gd_scene load_steps=4 format=3 uid="uid://q4pqibqydiyx"]
+
+[ext_resource type="Script" path="res://Scenes/MatchBoardPanel/match_board_panel.gd" id="1_62egk"]
+[ext_resource type="Texture2D" uid="uid://dcrkm4saq5y2u" path="res://Scenes/MatchBoardPanel/Images/background.png" id="1_ekyl5"]
+[ext_resource type="PackedScene" uid="uid://cmwndu6pblh3t" path="res://Scenes/Witch/witch.tscn" id="2_xbe0u"]
+
+[node name="MatchBoardPanel" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 95.0
+script = ExtResource("1_62egk")
+
+[node name="BoardPanelBackground" type="Sprite2D" parent="."]
+texture = ExtResource("1_ekyl5")
+centered = false
+offset = Vector2(-1, -1)
+
+[node name="Witch" parent="." instance=ExtResource("2_xbe0u")]
+position = Vector2(3, 141)
+_starting_position = Vector2(3, 141)
+_column = 1
+
+[node name="FallingPieces" type="MarginContainer" parent="."]
+layout_mode = 2
+
+[node name="WaitingArea" type="MarginContainer" parent="FallingPieces"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="FallingArea" type="MarginContainer" parent="FallingPieces"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="GroundedArea" type="MarginContainer" parent="FallingPieces"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="StartWaitTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="AddItemsToWaitingAreaTimer" type="Timer" parent="."]
+wait_time = 0.25
+one_shot = true
+
+[connection signal="timeout" from="StartWaitTimer" to="." method="_start_game"]
+[connection signal="timeout" from="AddItemsToWaitingAreaTimer" to="." method="_add_items_to_waiting_area"]

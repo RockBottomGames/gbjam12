@@ -1,0 +1,219 @@
+[gd_scene load_steps=24 format=3 uid="uid://cmwndu6pblh3t"]
+
+[ext_resource type="Texture2D" uid="uid://c45xfsmbkpbif" path="res://Scenes/Witch/Images/witch.png" id="1_hoyti"]
+[ext_resource type="Script" path="res://Scenes/Witch/witch.gd" id="2_rq1lj"]
+[ext_resource type="Script" path="res://Scenes/Witch/witch_animation_tree.gd" id="2_von0f"]
+
+[sub_resource type="Animation" id="Animation_hwim8"]
+resource_name = "idle"
+length = 0.1
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_qtofv"]
+length = 0.001
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_umknl"]
+resource_name = "turn_back"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0333333, 0.1, 0.166667, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AnimationTree")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.266667),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"_end_switch_facing_backward"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_8dvp4"]
+resource_name = "idle_back"
+length = 0.1
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [4]
+}
+
+[sub_resource type="Animation" id="Animation_p0vbj"]
+resource_name = "turn_front"
+length = 0.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0333333, 0.1, 0.166667, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [4, 3, 2, 1, 0]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AnimationTree")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.266667),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"_end_switch_facing_forward"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_vvw6h"]
+_data = {
+"RESET": SubResource("Animation_qtofv"),
+"idle_back": SubResource("Animation_8dvp4"),
+"idle_front": SubResource("Animation_hwim8"),
+"turn_back": SubResource("Animation_umknl"),
+"turn_front": SubResource("Animation_p0vbj")
+}
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_dmuxv"]
+animation = &"idle_back"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_y521b"]
+animation = &"idle_front"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_c0sjr"]
+animation = &"turn_back"
+
+[sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_f5etc"]
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_x8c0x"]
+graph_offset = Vector2(-534.72, -65.313)
+nodes/turn_back_animation/node = SubResource("AnimationNodeAnimation_c0sjr")
+nodes/turn_back_animation/position = Vector2(-180, 100)
+nodes/turn_speed/node = SubResource("AnimationNodeTimeScale_f5etc")
+nodes/turn_speed/position = Vector2(80, 140)
+node_connections = [&"output", 0, &"turn_speed", &"turn_speed", 0, &"turn_back_animation"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_htmqi"]
+animation = &"turn_front"
+
+[sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_8j77y"]
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_jiui7"]
+nodes/output/position = Vector2(820, 160)
+nodes/turn_front_animation/node = SubResource("AnimationNodeAnimation_htmqi")
+nodes/turn_front_animation/position = Vector2(380, 160)
+nodes/turn_speed/node = SubResource("AnimationNodeTimeScale_8j77y")
+nodes/turn_speed/position = Vector2(620, 140)
+node_connections = [&"output", 0, &"turn_speed", &"turn_speed", 0, &"turn_front_animation"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_t0m54"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_mo00f"]
+advance_mode = 2
+advance_expression = "_is_switching"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_yvosu"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_250bs"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_a6wf1"]
+advance_mode = 2
+advance_expression = "_is_switching"
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_60fqj"]
+states/idle_back/node = SubResource("AnimationNodeAnimation_dmuxv")
+states/idle_back/position = Vector2(762, 99)
+states/idle_front/node = SubResource("AnimationNodeAnimation_y521b")
+states/idle_front/position = Vector2(398, 107)
+states/turn_back/node = SubResource("AnimationNodeBlendTree_x8c0x")
+states/turn_back/position = Vector2(582, -12)
+states/turn_front/node = SubResource("AnimationNodeBlendTree_jiui7")
+states/turn_front/position = Vector2(563, 187)
+transitions = ["Start", "idle_front", SubResource("AnimationNodeStateMachineTransition_t0m54"), "idle_front", "turn_back", SubResource("AnimationNodeStateMachineTransition_mo00f"), "turn_back", "idle_back", SubResource("AnimationNodeStateMachineTransition_yvosu"), "turn_front", "idle_front", SubResource("AnimationNodeStateMachineTransition_250bs"), "idle_back", "turn_front", SubResource("AnimationNodeStateMachineTransition_a6wf1")]
+graph_offset = Vector2(-89, -83)
+
+[node name="Witch" type="Sprite2D"]
+texture = ExtResource("1_hoyti")
+centered = false
+offset = Vector2(1, -26)
+hframes = 5
+region_enabled = true
+region_rect = Rect2(1, 1, 220, 26)
+script = ExtResource("2_rq1lj")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_vvw6h")
+}
+
+[node name="AnimationTree" type="AnimationTree" parent="."]
+tree_root = SubResource("AnimationNodeStateMachine_60fqj")
+anim_player = NodePath("../AnimationPlayer")
+parameters/turn_back/turn_speed/scale = 1.0
+parameters/turn_front/turn_speed/scale = 1.0
+script = ExtResource("2_von0f")
+
+[node name="SwitchCooldownTimer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[node name="MoveCooldownTimer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[connection signal="timeout" from="SwitchCooldownTimer" to="." method="_on_switch_cooldown_timer_timeout"]
+[connection signal="timeout" from="MoveCooldownTimer" to="." method="_on_move_cooldown_timer_timeout"]

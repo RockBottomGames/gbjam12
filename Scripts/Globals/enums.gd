@@ -1,0 +1,9 @@
+class_name Enums
+
+enum FALLING_PIECE_TYPE {
+	UNINITIALIZED = -1,
+	EYE_OF_NEWT = 0,
+	GIANTS_THUMB = 1,
+	VAMPIRES_TEETH = 2,
+	WING_OF_BAT = 3
+}

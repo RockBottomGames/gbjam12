@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=3 uid="uid://cnd6ti3pfgjg4"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_iq01i"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_apw8g"]
+material = SubResource("StandardMaterial3D_iq01i")
+size = Vector2(80, 72)
+center_offset = Vector3(40, 36, 0)
+orientation = 2
+
+[node name="UI" type="CanvasLayer"]
+
+[node name="Menu" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ColorRect" type="ColorRect" parent="Menu"]
+visible = false
+layout_mode = 2
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="Menu"]
+position = Vector2(17, 66)
+rotation = -0.760964
+mesh = SubResource("PlaneMesh_apw8g")

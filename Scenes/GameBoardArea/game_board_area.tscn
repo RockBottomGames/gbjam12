@@ -1,0 +1,49 @@
+[gd_scene load_steps=4 format=3 uid="uid://dfl5e4hqa1dm3"]
+
+[ext_resource type="PackedScene" uid="uid://q4pqibqydiyx" path="res://Scenes/MatchBoardPanel/match_board_panel.tscn" id="1_q5kx1"]
+[ext_resource type="Texture2D" uid="uid://coby2dodfd721" path="res://Scenes/GameBoardArea/Images/top_right.png" id="2_66q5v"]
+[ext_resource type="Texture2D" uid="uid://bptpdoihp83vj" path="res://Scenes/GameBoardArea/Images/bottom_right.png" id="3_pny47"]
+
+[node name="GameBoardArea" type="CanvasLayer"]
+
+[node name="Board" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PanelContainer" type="HBoxContainer" parent="Board"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="MatchBoardPanel" parent="Board/PanelContainer" instance=ExtResource("1_q5kx1")]
+layout_mode = 2
+
+[node name="InfoPanel" type="VBoxContainer" parent="Board/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 65.0
+theme_override_constants/separation = 0
+
+[node name="BattleBox" type="MarginContainer" parent="Board/PanelContainer/InfoPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 70.0
+
+[node name="BattleBoxBackground" type="Sprite2D" parent="Board/PanelContainer/InfoPanel/BattleBox"]
+texture = ExtResource("2_66q5v")
+centered = false
+offset = Vector2(-1, -1)
+
+[node name="LevelUpBox" type="MarginContainer" parent="Board/PanelContainer/InfoPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 74.0
+
+[node name="LevelUpBoxBackground" type="Sprite2D" parent="Board/PanelContainer/InfoPanel/LevelUpBox"]
+texture = ExtResource("3_pny47")
+centered = false
+offset = Vector2(-1, -1)

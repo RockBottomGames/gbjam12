@@ -1,0 +1,35 @@
+[gd_scene load_steps=3 format=3 uid="uid://d0r71kbhm3vxb"]
+
+[ext_resource type="Texture2D" uid="uid://duysu1p3m3l5" path="res://icon.svg" id="1_rc0cn"]
+[ext_resource type="Texture2D" uid="uid://bjj2wdnqbihap" path="res://godot_text.png" id="2_p7071"]
+
+[node name="PlayerArea" type="CanvasLayer"]
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="MarginContainer"]
+position = Vector2(80, 60)
+scale = Vector2(0.67, 0.67)
+texture = ExtResource("1_rc0cn")
+
+[node name="Sprite2D2" type="Sprite2D" parent="MarginContainer"]
+position = Vector2(80, 108.96)
+scale = Vector2(0.26, 0.26)
+texture = ExtResource("2_p7071")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 15
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+text = "Made in"
+horizontal_alignment = 1

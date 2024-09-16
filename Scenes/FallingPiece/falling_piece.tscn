@@ -1,0 +1,350 @@
+[gd_scene load_steps=44 format=3 uid="uid://bbclfboo254ne"]
+
+[ext_resource type="Texture2D" uid="uid://xb0s0h384y3t" path="res://Scenes/FallingPiece/Images/sprite_sheet.png" id="1_1hn87"]
+[ext_resource type="Script" path="res://Scenes/FallingPiece/falling_piece_animation_tree.gd" id="2_3w5cm"]
+[ext_resource type="Script" path="res://Scenes/FallingPiece/falling_piece.gd" id="2_030ak"]
+
+[sub_resource type="Animation" id="Animation_xt25q"]
+resource_name = "falling_eye_of_newt"
+length = 0.2
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [8]
+}
+
+[sub_resource type="Animation" id="Animation_sm3hq"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [15]
+}
+
+[sub_resource type="Animation" id="Animation_j7m1q"]
+resource_name = "grounded_eye_of_newt"
+length = 0.2
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [9]
+}
+
+[sub_resource type="Animation" id="Animation_5qtpj"]
+resource_name = "cleared"
+length = 0.25
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0666667, 0.133333, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [12, 13, 14, 15]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.233333),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"release_data"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_rdfsm"]
+resource_name = "falling_giants_thumb"
+length = 0.2
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [6]
+}
+
+[sub_resource type="Animation" id="Animation_wtfu4"]
+resource_name = "grounded_giants_thumb"
+length = 0.2
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [7]
+}
+
+[sub_resource type="Animation" id="Animation_v6unf"]
+resource_name = "falling_vampires_teeth"
+length = 0.2
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [4]
+}
+
+[sub_resource type="Animation" id="Animation_wh5uu"]
+resource_name = "grounded_vampires_teeth"
+length = 0.2
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [5]
+}
+
+[sub_resource type="Animation" id="Animation_hlpng"]
+resource_name = "falling_wing_of_bat"
+length = 0.2
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [10]
+}
+
+[sub_resource type="Animation" id="Animation_xo0yg"]
+resource_name = "grounded_wing_of_bat"
+length = 0.2
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [11]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_at8mb"]
+_data = {
+"RESET": SubResource("Animation_sm3hq"),
+"cleared": SubResource("Animation_5qtpj"),
+"falling_eye_of_newt": SubResource("Animation_xt25q"),
+"falling_giants_thumb": SubResource("Animation_rdfsm"),
+"falling_vampires_teeth": SubResource("Animation_v6unf"),
+"falling_wing_of_bat": SubResource("Animation_hlpng"),
+"grounded_eye_of_newt": SubResource("Animation_j7m1q"),
+"grounded_giants_thumb": SubResource("Animation_wtfu4"),
+"grounded_vampires_teeth": SubResource("Animation_wh5uu"),
+"grounded_wing_of_bat": SubResource("Animation_xo0yg")
+}
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_26gas"]
+animation = &"RESET"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ljbl0"]
+animation = &"cleared"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_e0i1h"]
+animation = &"falling_eye_of_newt"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_2wyra"]
+animation = &"falling_giants_thumb"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_udsxi"]
+animation = &"falling_vampires_teeth"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_nfq3x"]
+animation = &"falling_wing_of_bat"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ngygq"]
+animation = &"grounded_eye_of_newt"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_3fxrv"]
+animation = &"grounded_giants_thumb"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_i2k4j"]
+animation = &"grounded_vampires_teeth"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_hwtow"]
+animation = &"grounded_wing_of_bat"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_vo568"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_iwffn"]
+advance_mode = 2
+advance_expression = "_is_initialized and _type == 0"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_5ud6f"]
+advance_mode = 2
+advance_expression = "_is_grounded"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_bq0do"]
+advance_mode = 2
+advance_expression = "_is_cleared"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_lf7d5"]
+advance_mode = 2
+advance_expression = "_is_cleared
+"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_vxyvf"]
+switch_mode = 2
+advance_mode = 2
+advance_expression = "not _is_initialized"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_bcu15"]
+advance_mode = 2
+advance_expression = "_is_initialized and _type == 1"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_43vpl"]
+advance_mode = 2
+advance_expression = "_is_grounded"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_jjh4v"]
+advance_mode = 2
+advance_expression = "_is_cleared"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_fnv6c"]
+advance_mode = 2
+advance_expression = "_is_cleared"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_kub1v"]
+advance_mode = 2
+advance_expression = "_is_initialized and _type == 2"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_30gv8"]
+advance_mode = 2
+advance_expression = "_is_initialized and _type == 3"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_acojh"]
+advance_mode = 2
+advance_expression = "_is_cleared"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_nxmnt"]
+advance_mode = 2
+advance_expression = "_is_cleared"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_gyiiw"]
+advance_mode = 2
+advance_expression = "_is_grounded"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_qttf1"]
+advance_mode = 2
+advance_expression = "_is_grounded"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_dkjq5"]
+advance_mode = 2
+advance_expression = "_is_cleared"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_lijxd"]
+advance_mode = 2
+advance_expression = "_is_cleared"
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_lihrv"]
+states/End/position = Vector2(1435, 96)
+states/RESET/node = SubResource("AnimationNodeAnimation_26gas")
+states/RESET/position = Vector2(257, 293)
+states/Start/position = Vector2(119, 294)
+states/cleared/node = SubResource("AnimationNodeAnimation_ljbl0")
+states/cleared/position = Vector2(1179, 290)
+states/falling_eye_of_newt/node = SubResource("AnimationNodeAnimation_e0i1h")
+states/falling_eye_of_newt/position = Vector2(677, 63)
+states/falling_giants_thumb/node = SubResource("AnimationNodeAnimation_2wyra")
+states/falling_giants_thumb/position = Vector2(687, 189)
+states/falling_vampires_teeth/node = SubResource("AnimationNodeAnimation_udsxi")
+states/falling_vampires_teeth/position = Vector2(713, 418)
+states/falling_wing_of_bat/node = SubResource("AnimationNodeAnimation_nfq3x")
+states/falling_wing_of_bat/position = Vector2(713, 566)
+states/grounded_eye_of_newt/node = SubResource("AnimationNodeAnimation_ngygq")
+states/grounded_eye_of_newt/position = Vector2(682, 128)
+states/grounded_giants_thumb/node = SubResource("AnimationNodeAnimation_3fxrv")
+states/grounded_giants_thumb/position = Vector2(701, 249)
+states/grounded_vampires_teeth/node = SubResource("AnimationNodeAnimation_i2k4j")
+states/grounded_vampires_teeth/position = Vector2(709, 351)
+states/grounded_wing_of_bat/node = SubResource("AnimationNodeAnimation_hwtow")
+states/grounded_wing_of_bat/position = Vector2(713, 499)
+transitions = ["Start", "RESET", SubResource("AnimationNodeStateMachineTransition_vo568"), "RESET", "falling_eye_of_newt", SubResource("AnimationNodeStateMachineTransition_iwffn"), "falling_eye_of_newt", "grounded_eye_of_newt", SubResource("AnimationNodeStateMachineTransition_5ud6f"), "grounded_eye_of_newt", "cleared", SubResource("AnimationNodeStateMachineTransition_bq0do"), "falling_eye_of_newt", "cleared", SubResource("AnimationNodeStateMachineTransition_lf7d5"), "cleared", "RESET", SubResource("AnimationNodeStateMachineTransition_vxyvf"), "RESET", "falling_giants_thumb", SubResource("AnimationNodeStateMachineTransition_bcu15"), "falling_giants_thumb", "grounded_giants_thumb", SubResource("AnimationNodeStateMachineTransition_43vpl"), "falling_giants_thumb", "cleared", SubResource("AnimationNodeStateMachineTransition_jjh4v"), "grounded_giants_thumb", "cleared", SubResource("AnimationNodeStateMachineTransition_fnv6c"), "RESET", "falling_vampires_teeth", SubResource("AnimationNodeStateMachineTransition_kub1v"), "RESET", "falling_wing_of_bat", SubResource("AnimationNodeStateMachineTransition_30gv8"), "falling_vampires_teeth", "cleared", SubResource("AnimationNodeStateMachineTransition_acojh"), "falling_wing_of_bat", "cleared", SubResource("AnimationNodeStateMachineTransition_nxmnt"), "falling_vampires_teeth", "grounded_vampires_teeth", SubResource("AnimationNodeStateMachineTransition_gyiiw"), "falling_wing_of_bat", "grounded_wing_of_bat", SubResource("AnimationNodeStateMachineTransition_qttf1"), "grounded_wing_of_bat", "cleared", SubResource("AnimationNodeStateMachineTransition_dkjq5"), "grounded_vampires_teeth", "cleared", SubResource("AnimationNodeStateMachineTransition_lijxd")]
+graph_offset = Vector2(-38, -13)
+
+[node name="FallingPiece" type="Sprite2D"]
+texture = ExtResource("1_1hn87")
+centered = false
+offset = Vector2(0, -15)
+hframes = 5
+vframes = 4
+frame = 15
+region_enabled = true
+region_rect = Rect2(1, 0, 110, 64)
+script = ExtResource("2_030ak")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_at8mb")
+}
+
+[node name="AnimationTree" type="AnimationTree" parent="."]
+tree_root = SubResource("AnimationNodeStateMachine_lihrv")
+anim_player = NodePath("../AnimationPlayer")
+script = ExtResource("2_3w5cm")
