@@ -72,6 +72,7 @@ func _on_move_cooldown_timer_timeout() -> void:
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	switch_cooldown_timer.wait_time = Consts.TOTAL_SWAP_TIME
 	if _starting_position == Vector2.ZERO:
 		_starting_position = position
 	if _column != 0:

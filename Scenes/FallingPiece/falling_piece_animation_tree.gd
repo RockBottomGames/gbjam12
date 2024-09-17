@@ -2,22 +2,22 @@
 extends AnimationTree
 class_name FallingPieceAnimationTree
 
-@export var is_initialized: bool = false:
+var is_initialized: bool = false:
 	# Update speed and reset the rotation.
 	get:
 		return _is_initialized
 		
-@export var is_grounded: bool = false:
+var is_grounded: bool = false:
 	# Update speed and reset the rotation.
 	get:
 		return _is_grounded
 		
-@export var is_cleared: bool = false:
+var is_cleared: bool = false:
 	# Update speed and reset the rotation.
 	get:
 		return _is_cleared
 		
-@export var type: Enums.FALLING_PIECE_TYPE = Enums.FALLING_PIECE_TYPE.UNINITIALIZED:
+var type: Enums.FALLING_PIECE_TYPE = Enums.FALLING_PIECE_TYPE.UNINITIALIZED:
 	# Update speed and reset the rotation.
 	get:
 		return _type
