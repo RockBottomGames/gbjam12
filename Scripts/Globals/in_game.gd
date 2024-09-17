@@ -10,7 +10,7 @@ var falling_pieces_total_weight: int = 0:
 			return 0
 		return falling_pieces_weights.reduce(func(accum, number): return accum + number, 0)
 
-var falling_time: float = 20
+var falling_speed: float = 1.0
 
 func reset_falling_pieces_weights() -> void:
 	falling_pieces_weights = []
