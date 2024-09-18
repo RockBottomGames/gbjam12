@@ -32,6 +32,7 @@ func intialize(new_type: Enums.FALLING_PIECE_TYPE) -> bool:
 		return false
 	match new_type:
 		Enums.FALLING_PIECE_TYPE.EYE_OF_NEWT, Enums.FALLING_PIECE_TYPE.GIANTS_THUMB, Enums.FALLING_PIECE_TYPE.VAMPIRES_TEETH, Enums.FALLING_PIECE_TYPE.WING_OF_BAT:
+			set("parameters/time_reset/seek_request", (fmod((Time.get_ticks_msec() as float) / 1000.0, 2.0)))
 			_is_grounded = false
 			_is_cleared = false
 			_type = new_type
