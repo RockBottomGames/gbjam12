@@ -100,10 +100,10 @@ func ground(landing_on: FallingPiece) -> bool:
 		return true
 	return false
 
-func clear() -> bool:
+func clear(is_self_clear: bool = false) -> bool:
 	if _animation_tree == null:
 		return false
-	if below != null:
+	if not is_self_clear and below != null:
 		below.above = null
 		below = null
 	return _animation_tree.clear()
