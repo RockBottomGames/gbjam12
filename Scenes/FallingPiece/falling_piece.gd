@@ -6,15 +6,16 @@ signal was_cleared(falling_piece: FallingPiece)
 @onready var _animation_tree: FallingPieceAnimationTree = $FallingPiece/AnimationTree
 
 var swapping_tween: Tween = null
+var pot_tween: Tween = null
 var above: FallingPiece = null
 var below: FallingPiece = null 
 var level: int = 0
 var _fractional_position: Vector2 = Vector2.ZERO
 var _is_falling: bool = false
 var _is_swapping: bool = false
+var _is_potting: bool = false
 var _is_swapping_left: bool = false
 var _grounded_pos_y: int = -1
-var _final_pos_x: int = -1
 var _swap_above_time: float = 0.0
 var _delayed_swap: float = 0.0
 
@@ -60,6 +61,19 @@ var type: Enums.FALLING_PIECE_TYPE = Enums.FALLING_PIECE_TYPE.UNINITIALIZED:
 		return _animation_tree.type
 
 func initialize(new_type: Enums.FALLING_PIECE_TYPE, new_position: Vector2) -> bool:
+	swapping_tween = null
+	pot_tween = null
+	above = null
+	below = null 
+	level = 0
+	_fractional_position = Vector2.ZERO
+	_is_falling = false
+	_is_swapping = false
+	_is_potting = false
+	_is_swapping_left = false
+	_grounded_pos_y = -1
+	_swap_above_time = 0.0
+	_delayed_swap = 0.0
 	type_to_add = new_type
 	position_to_set = new_position
 	if _animation_tree == null:
@@ -83,7 +97,8 @@ func land(landing_on: FallingPiece, destination_height: int) -> Enums.FALLING_PI
 	if landing_on == null:
 		ground(landing_on)
 		return Enums.FALLING_PIECE_LANDING_TYPE.GROUNDED
-	if landing_is_a_clear(landing_on):
+	if (type != Enums.FALLING_PIECE_TYPE.POT_TOP
+	and landing_is_a_clear(landing_on)):
 		landing_on.clear()
 		clear()
 		return Enums.FALLING_PIECE_LANDING_TYPE.CLEARED
@@ -100,13 +115,67 @@ func ground(landing_on: FallingPiece) -> bool:
 		return true
 	return false
 
-func clear(is_self_clear: bool = false) -> bool:
+func clear() -> bool:
 	if _animation_tree == null:
 		return false
-	if not is_self_clear and below != null:
+	if below != null:
 		below.above = null
 		below = null
 	return _animation_tree.clear()
+	
+func _after_pot() -> void:
+	pot_tween = null
+	
+func _queue_into_pot() -> Tween:
+	_is_potting = true
+	if pot_tween != null:
+		return
+	pot_tween = get_tree().create_tween()
+	pot_tween.tween_property(self, "_fractional_position:y", Consts.FALLING_PIECE_HEIGHT, Consts.QUEUE_INTO_POT_TIME).as_relative()
+	pot_tween.tween_callback(_after_pot)
+	if above != null:
+		# return the last called queue_into_pot
+		var tween = above._queue_into_pot()
+		if tween != null:
+			return tween
+	return pot_tween
+	
+func _animate_into_pot() -> Tween:
+	if _animation_tree == null:
+		return null
+	_animation_tree.into_pot()
+	var type_index = type as int
+	if type_index < 0 or type_index > 3:
+		pot_tween = get_tree().create_tween()
+		pot_tween.tween_property(self, "_fractional_position:y", 0.01, 0.01).as_relative()
+		pot_tween.tween_callback(_after_pot)
+		return pot_tween
+	pot_tween = get_tree().create_tween()
+	pot_tween.tween_property(self, "_fractional_position:y", Consts.INTO_POT_HEIGHT, Consts.INTO_POT_TIME).as_relative()
+	pot_tween.tween_callback(_after_pot)
+	return pot_tween
+	
+func into_pot() -> Tween:
+	_is_potting = true
+	# to avoid confusion of using pot_tween, instead use variable.
+	var into_pot_tween = _animate_into_pot()
+	if into_pot_tween == null:
+		print("above is null")
+		return null
+	if above != null:
+		# set above's below to pot
+		above.below = below
+		# set pot's above to self's above
+		below.above = above
+		# return the longer tween of the above pot's time
+		var tween = above._queue_into_pot()
+		if tween != null:
+			return tween
+		return into_pot_tween
+	# set pot's above to null
+	print("above is null")
+	below.above = null
+	return into_pot_tween
 
 func release_data() -> bool:
 	if _animation_tree == null:
@@ -116,6 +185,7 @@ func release_data() -> bool:
 	if swapping_tween != null:
 		swapping_tween.kill()
 		swapping_tween = null
+	_is_potting = false
 	_is_falling = false
 	above = null
 	below = null 
@@ -124,6 +194,9 @@ func release_data() -> bool:
 
 func begin_falling():
 	_is_falling = true
+
+func pause_falling():
+	_is_falling = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -135,7 +208,10 @@ func _ready() -> void:
 func _physics_process(_delta: float) -> void:
 	position = _fractional_position
 	var new_velocity = Vector2.ZERO
-	if is_grounded:
+	if _is_potting:
+		position = _fractional_position as Vector2i
+		return
+	elif is_grounded:
 		position.y = _grounded_pos_y
 	if _delayed_swap > 0:
 		_delayed_swap -= _delta
@@ -173,7 +249,6 @@ func swap(left: bool, delay: float = 0.0) -> void:
 	var swap_relative_x = (-Consts.COL_WIDTH) if left else Consts.COL_WIDTH
 	swapping_tween = get_tree().create_tween()
 	swapping_tween.tween_property(self, "_fractional_position:x", swap_relative_x, Consts.WITCH_SWAP_TIME).as_relative()
-	_final_pos_x = (position.x + swap_relative_x) as int
 	swapping_tween.tween_callback(_after_swap)
 	_is_swapping = true
 	_swap_above_time = Consts.SWAP_TOP_DELAY

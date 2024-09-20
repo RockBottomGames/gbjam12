@@ -29,8 +29,11 @@ var type: Enums.FALLING_PIECE_TYPE = Enums.FALLING_PIECE_TYPE.UNINITIALIZED:
 
 func _initialize_blend_tree_parameters_by_type():
 	set("parameters/time_reset/seek_request", fmod((Time.get_ticks_msec() as float) / 1000.0, 2.0))
-	set("parameters/falling_animations/transition_request", str("state_", _type as int))
-	set("parameters/grounded_animations/transition_request", str("state_", _type as int))
+	var type_index: int = _type as int
+	set("parameters/falling_animations/transition_request", str("state_", type_index))
+	set("parameters/grounded_animations/transition_request", str("state_", type_index))
+	if type_index >= 0 and type_index <= 3:
+		set("parameters/into_pot_animations/transition_request", str("state_", type_index))
 	set("parameters/synced_transitions/transition_request", "falling")
 	set("parameters/reset_transitions/transition_request", "synced_animations")
 	
@@ -40,11 +43,19 @@ func _set_grounded_blend_tree_parameters():
 func _set_cleared_blend_tree_parameters():
 	set("parameters/reset_transitions/transition_request", "cleared")
 	
+func _set_into_pot_blend_tree_parameters():
+	var type_index: int = _type as int
+	if type_index >= 0 and type_index <= 3:
+		set("parameters/reset_transitions/transition_request", "into_pot")
+	else:
+		set("parameters/reset_transitions/transition_request", "cleared")
+	
 func _reset_blend_tree_parameters():
 	set("parameters/falling_animations/transition_request", "state_0")
 	set("parameters/grounded_animations/transition_request", "state_0")
-	set("parameters/synced_transitions/transition_request", "falling")
-	set("parameters/reset_transitions/transition_request", "uninitialized")
+	set("parameters/into_pot_animations/transition_request", "state_0")
+	set("parameters/synced_transitions/transition_request", "uninitialized")
+	set("parameters/reset_transitions/transition_request", "synced_animations")
 
 func intialize(new_type: Enums.FALLING_PIECE_TYPE) -> bool:
 	if _is_initialized:
@@ -67,6 +78,13 @@ func ground() -> bool:
 		return false
 	_set_grounded_blend_tree_parameters()
 	_is_grounded = true
+	return true
+	
+func into_pot() -> bool:
+	if not _is_initialized or _is_cleared:
+		return false
+	_set_into_pot_blend_tree_parameters()
+	_is_cleared = true
 	return true
 
 func clear() -> bool:

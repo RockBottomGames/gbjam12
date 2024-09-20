@@ -46,14 +46,14 @@ size_flags_vertical = 0
 [node name="StartWaitTimer" type="Timer" parent="."]
 one_shot = true
 
-[node name="AddItemsToWaitingAreaTimer" type="Timer" parent="."]
-wait_time = 0.25
-one_shot = true
-
 [node name="SwapPauseFallingTimer" type="Timer" parent="."]
 wait_time = 0.34
 one_shot = true
 
+[node name="PotWaitStartTimer" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
 [connection signal="timeout" from="StartWaitTimer" to="." method="_start_game"]
-[connection signal="timeout" from="AddItemsToWaitingAreaTimer" to="." method="_add_items_to_waiting_area"]
 [connection signal="timeout" from="SwapPauseFallingTimer" to="." method="_on_swap_finished"]
+[connection signal="timeout" from="PotWaitStartTimer" to="." method="_clear_pots"]

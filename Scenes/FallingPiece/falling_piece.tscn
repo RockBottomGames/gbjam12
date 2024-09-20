@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://bbclfboo254ne"]
+[gd_scene load_steps=50 format=3 uid="uid://bbclfboo254ne"]
 
 [ext_resource type="Script" path="res://Scenes/FallingPiece/falling_piece_animation_tree.gd" id="2_3w5cm"]
 [ext_resource type="Script" path="res://Scenes/FallingPiece/falling_piece.gd" id="2_030ak"]
@@ -288,6 +288,70 @@ tracks/0/keys = {
 "values": [4, 5, 6, 7]
 }
 
+[sub_resource type="Animation" id="Animation_06cym"]
+resource_name = "eye_of_newt_into_pot"
+length = 0.7
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0666667, 0.133333, 0.2, 0.3, 0.366667, 0.433333, 0.5, 0.566667, 0.633333),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [52, 53, 54, 55, 76, 77, 78, 79, 80, 81]
+}
+
+[sub_resource type="Animation" id="Animation_5xqyt"]
+resource_name = "into_pot_giants_thumb"
+length = 0.7
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0666667, 0.133333, 0.2, 0.3, 0.366667, 0.433333, 0.5, 0.566667, 0.633333),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [40, 41, 42, 43, 76, 77, 78, 79, 80, 81]
+}
+
+[sub_resource type="Animation" id="Animation_e425o"]
+resource_name = "into_pot_vampires_teeth"
+length = 0.7
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0666667, 0.133333, 0.2, 0.3, 0.366667, 0.433333, 0.5, 0.566667, 0.633333),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [28, 29, 30, 31, 76, 77, 78, 79, 80, 81]
+}
+
+[sub_resource type="Animation" id="Animation_uptlc"]
+resource_name = "into_pot_wing_of_bat"
+length = 0.7
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.0666667, 0.133333, 0.2, 0.3, 0.366667, 0.433333, 0.5, 0.566667, 0.633333),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [64, 65, 66, 67, 76, 77, 78, 79, 80, 81]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_at8mb"]
 _data = {
 "RESET": SubResource("Animation_sm3hq"),
@@ -303,6 +367,10 @@ _data = {
 "grounded_giants_thumb": SubResource("Animation_wtfu4"),
 "grounded_vampires_teeth": SubResource("Animation_wh5uu"),
 "grounded_wing_of_bat": SubResource("Animation_xo0yg"),
+"into_pot_eye_of_newt": SubResource("Animation_06cym"),
+"into_pot_giants_thumb": SubResource("Animation_5xqyt"),
+"into_pot_vampires_teeth": SubResource("Animation_e425o"),
+"into_pot_wing_of_bat": SubResource("Animation_uptlc"),
 "stirring_pot": SubResource("Animation_c5ygi"),
 "swooshing_ladle": SubResource("Animation_rvll3"),
 "swooshing_pot_top": SubResource("Animation_m45i6")
@@ -404,6 +472,36 @@ animation = &"grounded_vampires_teeth"
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_p6eea"]
 animation = &"grounded_wing_of_bat"
 
+[sub_resource type="AnimationNodeTransition" id="AnimationNodeTransition_iveul"]
+input_0/name = "state_0"
+input_0/auto_advance = false
+input_0/break_loop_at_end = false
+input_0/reset = true
+input_1/name = "state_1"
+input_1/auto_advance = false
+input_1/break_loop_at_end = false
+input_1/reset = true
+input_2/name = "state_2"
+input_2/auto_advance = false
+input_2/break_loop_at_end = false
+input_2/reset = true
+input_3/name = "state_3"
+input_3/auto_advance = false
+input_3/break_loop_at_end = false
+input_3/reset = true
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_8g6gp"]
+animation = &"into_pot_eye_of_newt"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_m3ptl"]
+animation = &"into_pot_giants_thumb"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_q5mcf"]
+animation = &"into_pot_vampires_teeth"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_smcod"]
+animation = &"into_pot_wing_of_bat"
+
 [sub_resource type="AnimationNodeTransition" id="AnimationNodeTransition_g1hnm"]
 input_0/name = "synced_animations"
 input_0/auto_advance = false
@@ -413,6 +511,10 @@ input_1/name = "cleared"
 input_1/auto_advance = false
 input_1/break_loop_at_end = false
 input_1/reset = true
+input_2/name = "into_pot"
+input_2/auto_advance = false
+input_2/break_loop_at_end = false
+input_2/reset = true
 
 [sub_resource type="AnimationNodeTransition" id="AnimationNodeTransition_e2w6g"]
 sync = true
@@ -432,11 +534,11 @@ input_2/reset = false
 [sub_resource type="AnimationNodeTimeSeek" id="AnimationNodeTimeSeek_6hd06"]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_321a7"]
-graph_offset = Vector2(-1273.47, -494.713)
+graph_offset = Vector2(-1513.94, -885.85)
 nodes/RESET/node = SubResource("AnimationNodeAnimation_omueg")
 nodes/RESET/position = Vector2(-1180, -1060)
 nodes/cleared/node = SubResource("AnimationNodeAnimation_l8bin")
-nodes/cleared/position = Vector2(-640, -680)
+nodes/cleared/position = Vector2(-660, -720)
 nodes/falling_animations/node = SubResource("AnimationNodeTransition_mkykm")
 nodes/falling_animations/position = Vector2(-1200, -780)
 nodes/falling_eye_of_newt/node = SubResource("AnimationNodeAnimation_gbebq")
@@ -465,14 +567,24 @@ nodes/grounded_vampires_teeth/node = SubResource("AnimationNodeAnimation_8yran")
 nodes/grounded_vampires_teeth/position = Vector2(-1540, 400)
 nodes/grounded_wing_of_bat/node = SubResource("AnimationNodeAnimation_p6eea")
 nodes/grounded_wing_of_bat/position = Vector2(-1540, 620)
-nodes/output/position = Vector2(-180, -900)
+nodes/into_pot_animations/node = SubResource("AnimationNodeTransition_iveul")
+nodes/into_pot_animations/position = Vector2(-500, -20)
+nodes/into_pot_eye_of_newt/node = SubResource("AnimationNodeAnimation_8g6gp")
+nodes/into_pot_eye_of_newt/position = Vector2(-860, -40)
+nodes/into_pot_giants_thumb/node = SubResource("AnimationNodeAnimation_m3ptl")
+nodes/into_pot_giants_thumb/position = Vector2(-880, 100)
+nodes/into_pot_vampires_teeth/node = SubResource("AnimationNodeAnimation_q5mcf")
+nodes/into_pot_vampires_teeth/position = Vector2(-900, 240)
+nodes/into_pot_wing_of_bat/node = SubResource("AnimationNodeAnimation_smcod")
+nodes/into_pot_wing_of_bat/position = Vector2(-880, 400)
+nodes/output/position = Vector2(40, -920)
 nodes/reset_transitions/node = SubResource("AnimationNodeTransition_g1hnm")
-nodes/reset_transitions/position = Vector2(-440, -900)
+nodes/reset_transitions/position = Vector2(-220, -920)
 nodes/synced_transitions/node = SubResource("AnimationNodeTransition_e2w6g")
 nodes/synced_transitions/position = Vector2(-920, -840)
 nodes/time_reset/node = SubResource("AnimationNodeTimeSeek_6hd06")
 nodes/time_reset/position = Vector2(-660, -880)
-node_connections = [&"falling_animations", 0, &"falling_eye_of_newt", &"falling_animations", 1, &"falling_giants_thumb", &"falling_animations", 2, &"falling_vampires_teeth", &"falling_animations", 3, &"falling_wing_of_bat", &"falling_animations", 4, &"falling_pot", &"falling_animations", 5, &"falling_pot_top", &"grounded_animations", 0, &"grounded_eye_of_newt", &"grounded_animations", 1, &"grounded_giants_thumb", &"grounded_animations", 2, &"grounded_vampires_teeth", &"grounded_animations", 3, &"grounded_wing_of_bat", &"grounded_animations", 4, &"grounded_pot", &"grounded_animations", 5, &"grounded_pot_top", &"output", 0, &"reset_transitions", &"reset_transitions", 0, &"time_reset", &"reset_transitions", 1, &"cleared", &"synced_transitions", 0, &"RESET", &"synced_transitions", 1, &"falling_animations", &"synced_transitions", 2, &"grounded_animations", &"time_reset", 0, &"synced_transitions"]
+node_connections = [&"falling_animations", 0, &"falling_eye_of_newt", &"falling_animations", 1, &"falling_giants_thumb", &"falling_animations", 2, &"falling_vampires_teeth", &"falling_animations", 3, &"falling_wing_of_bat", &"falling_animations", 4, &"falling_pot", &"falling_animations", 5, &"falling_pot_top", &"grounded_animations", 0, &"grounded_eye_of_newt", &"grounded_animations", 1, &"grounded_giants_thumb", &"grounded_animations", 2, &"grounded_vampires_teeth", &"grounded_animations", 3, &"grounded_wing_of_bat", &"grounded_animations", 4, &"grounded_pot", &"grounded_animations", 5, &"grounded_pot_top", &"into_pot_animations", 0, &"into_pot_eye_of_newt", &"into_pot_animations", 1, &"into_pot_giants_thumb", &"into_pot_animations", 2, &"into_pot_vampires_teeth", &"into_pot_animations", 3, &"into_pot_wing_of_bat", &"output", 0, &"reset_transitions", &"reset_transitions", 0, &"time_reset", &"reset_transitions", 1, &"cleared", &"reset_transitions", 2, &"into_pot_animations", &"synced_transitions", 0, &"RESET", &"synced_transitions", 1, &"falling_animations", &"synced_transitions", 2, &"grounded_animations", &"time_reset", 0, &"synced_transitions"]
 
 [node name="FallingPiece" type="CharacterBody2D"]
 collision_layer = 0
@@ -503,6 +615,9 @@ parameters/falling_animations/current_index = 0
 parameters/grounded_animations/current_state = "state_0"
 parameters/grounded_animations/transition_request = ""
 parameters/grounded_animations/current_index = 0
+parameters/into_pot_animations/current_state = ""
+parameters/into_pot_animations/transition_request = "state_0"
+parameters/into_pot_animations/current_index = -1
 parameters/reset_transitions/current_state = "synced_animations"
 parameters/reset_transitions/transition_request = ""
 parameters/reset_transitions/current_index = 0
