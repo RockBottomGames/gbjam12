@@ -1,7 +1,8 @@
 [gd_resource type="Theme" load_steps=2 format=3 uid="uid://cexhkqlgirg53"]
 
-[ext_resource type="FontFile" uid="uid://c2elxfd47k1t8" path="res://Theme/fonts/credited_fonts/m5x7.ttf" id="1_rbxj5"]
+[ext_resource type="FontFile" uid="uid://buugcn3cqyecm" path="res://Theme/fonts/credited_fonts/m3x6.ttf" id="1_oxlw6"]
 
 [resource]
-default_font = ExtResource("1_rbxj5")
+default_font = ExtResource("1_oxlw6")
 default_font_size = 16
+Label/colors/font_color = Color(1, 0.843137, 0.741176, 1)

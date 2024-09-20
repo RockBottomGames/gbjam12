@@ -1,0 +1,164 @@
+[gd_resource type="AnimationNodeBlendTree" load_steps=31 format=3 uid="uid://cbbkqi1vp4fjp"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_1nvmw"]
+animation = &"RESET"
+use_custom_timeline = true
+timeline_length = 2.0
+stretch_time_scale = true
+start_offset = 0.0
+loop_mode = 1
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_v4ex8"]
+animation = &"cleared"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_jwchr"]
+animation = &"falling_eye_of_newt"
+use_custom_timeline = true
+timeline_length = 1.0
+stretch_time_scale = true
+start_offset = 0.0
+loop_mode = 0
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_6us8q"]
+animation = &"falling_giants_thumb"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_702dn"]
+animation = &"falling_vampires_teeth"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_0t3wb"]
+animation = &"falling_wing_of_bat"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ljhbt"]
+animation = &"grounded_eye_of_newt"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ungxp"]
+animation = &"grounded_giants_thumb"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_jwl5f"]
+animation = &"grounded_vampires_teeth"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_j8xmq"]
+animation = &"grounded_wing_of_bat"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ujh72"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_apijq"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_lcrvo"]
+reset = false
+switch_mode = 1
+advance_mode = 2
+advance_expression = "_is_initialized and _type == 0"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_eeor1"]
+reset = false
+switch_mode = 1
+advance_mode = 2
+advance_expression = "_is_initialized and _type == 1"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ft0v8"]
+reset = false
+switch_mode = 1
+advance_mode = 2
+advance_expression = "_is_initialized and _type == 2"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_e0xwf"]
+reset = false
+switch_mode = 1
+advance_mode = 2
+advance_expression = "_is_initialized and _type == 3"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_217jq"]
+reset = false
+switch_mode = 1
+advance_mode = 2
+advance_expression = "_is_grounded"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_tksbk"]
+reset = false
+switch_mode = 1
+advance_mode = 2
+advance_expression = "_is_grounded"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_6b4o0"]
+reset = false
+switch_mode = 1
+advance_mode = 2
+advance_expression = "_is_grounded"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_q8ntm"]
+reset = false
+switch_mode = 1
+advance_mode = 2
+advance_expression = "_is_grounded"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_mqyhl"]
+advance_mode = 2
+advance_expression = "_is_cleared"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ejwu6"]
+advance_mode = 2
+advance_expression = "_is_cleared"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_klvb5"]
+advance_mode = 2
+advance_expression = "_is_cleared"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_viuhe"]
+advance_mode = 2
+advance_expression = "_is_cleared"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_06ly8"]
+advance_mode = 2
+advance_expression = "_is_cleared"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ykxkh"]
+advance_mode = 2
+advance_expression = "_is_cleared"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_g15vg"]
+advance_mode = 2
+advance_expression = "_is_cleared"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_x4ipr"]
+advance_mode = 2
+advance_expression = "_is_cleared"
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_u76i0"]
+states/End/position = Vector2(1573, 100)
+states/RESET/node = SubResource("AnimationNodeAnimation_1nvmw")
+states/RESET/position = Vector2(317, 100)
+states/cleared/node = SubResource("AnimationNodeAnimation_v4ex8")
+states/cleared/position = Vector2(1466, 100)
+states/falling_eye_of_newt/node = SubResource("AnimationNodeAnimation_jwchr")
+states/falling_eye_of_newt/position = Vector2(387, -192)
+states/falling_giants_thumb/node = SubResource("AnimationNodeAnimation_6us8q")
+states/falling_giants_thumb/position = Vector2(507, -33)
+states/falling_vampires_teeth/node = SubResource("AnimationNodeAnimation_702dn")
+states/falling_vampires_teeth/position = Vector2(507, 231)
+states/falling_wing_of_bat/node = SubResource("AnimationNodeAnimation_0t3wb")
+states/falling_wing_of_bat/position = Vector2(387, 411)
+states/grounded_eye_of_newt/node = SubResource("AnimationNodeAnimation_ljhbt")
+states/grounded_eye_of_newt/position = Vector2(499, -111)
+states/grounded_giants_thumb/node = SubResource("AnimationNodeAnimation_ungxp")
+states/grounded_giants_thumb/position = Vector2(625, 41)
+states/grounded_vampires_teeth/node = SubResource("AnimationNodeAnimation_jwl5f")
+states/grounded_vampires_teeth/position = Vector2(625, 152)
+states/grounded_wing_of_bat/node = SubResource("AnimationNodeAnimation_j8xmq")
+states/grounded_wing_of_bat/position = Vector2(499, 313)
+transitions = ["Start", "RESET", SubResource("AnimationNodeStateMachineTransition_ujh72"), "cleared", "RESET", SubResource("AnimationNodeStateMachineTransition_apijq"), "RESET", "falling_eye_of_newt", SubResource("AnimationNodeStateMachineTransition_lcrvo"), "RESET", "falling_giants_thumb", SubResource("AnimationNodeStateMachineTransition_eeor1"), "RESET", "falling_vampires_teeth", SubResource("AnimationNodeStateMachineTransition_ft0v8"), "RESET", "falling_wing_of_bat", SubResource("AnimationNodeStateMachineTransition_e0xwf"), "falling_eye_of_newt", "grounded_eye_of_newt", SubResource("AnimationNodeStateMachineTransition_217jq"), "falling_giants_thumb", "grounded_giants_thumb", SubResource("AnimationNodeStateMachineTransition_tksbk"), "falling_vampires_teeth", "grounded_vampires_teeth", SubResource("AnimationNodeStateMachineTransition_6b4o0"), "falling_wing_of_bat", "grounded_wing_of_bat", SubResource("AnimationNodeStateMachineTransition_q8ntm"), "falling_eye_of_newt", "cleared", SubResource("AnimationNodeStateMachineTransition_mqyhl"), "grounded_eye_of_newt", "cleared", SubResource("AnimationNodeStateMachineTransition_ejwu6"), "falling_giants_thumb", "cleared", SubResource("AnimationNodeStateMachineTransition_klvb5"), "grounded_giants_thumb", "cleared", SubResource("AnimationNodeStateMachineTransition_viuhe"), "grounded_vampires_teeth", "cleared", SubResource("AnimationNodeStateMachineTransition_06ly8"), "falling_vampires_teeth", "cleared", SubResource("AnimationNodeStateMachineTransition_ykxkh"), "grounded_wing_of_bat", "cleared", SubResource("AnimationNodeStateMachineTransition_g15vg"), "falling_wing_of_bat", "cleared", SubResource("AnimationNodeStateMachineTransition_x4ipr")]
+graph_offset = Vector2(-410, -248)
+
+[sub_resource type="AnimationNodeTimeSeek" id="AnimationNodeTimeSeek_vumep"]
+
+[resource]
+graph_offset = Vector2(-1105.04, -148.647)
+nodes/StateMachine/node = SubResource("AnimationNodeStateMachine_u76i0")
+nodes/StateMachine/position = Vector2(-320, 100)
+nodes/output/position = Vector2(160, 80)
+nodes/time_reset/node = SubResource("AnimationNodeTimeSeek_vumep")
+nodes/time_reset/position = Vector2(-60, 80)
+node_connections = [&"output", 0, &"time_reset", &"time_reset", 0, &"StateMachine"]
