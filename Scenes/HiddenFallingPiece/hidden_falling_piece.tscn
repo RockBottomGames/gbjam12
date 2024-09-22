@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://cq2ywqr5kx18u"]
+
+[ext_resource type="Script" path="res://Scenes/HiddenFallingPiece/hidden_falling_piece.gd" id="1_vivdf"]
+
+[node name="HiddenFallingPiece" type="CharacterBody2D"]
+script = ExtResource("1_vivdf")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(0, 0, 0, -13, 21, -13, 21, 0)
+
+[node name="StartFallingTimer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[connection signal="timeout" from="StartFallingTimer" to="." method="_on_start_falling_timer_timeout"]

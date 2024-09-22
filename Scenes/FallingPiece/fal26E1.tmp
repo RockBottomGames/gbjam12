@@ -695,9 +695,3 @@ grow_vertical = 0
 size_flags_horizontal = 8
 size_flags_vertical = 8
 text = "0"
-
-[node name="FailTimer" type="Timer" parent="."]
-wait_time = 0.1
-one_shot = true
-
-[connection signal="timeout" from="FailTimer" to="." method="_on_fail_timer_timeout"]

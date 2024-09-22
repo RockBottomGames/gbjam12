@@ -94,7 +94,7 @@ func clear() -> bool:
 	_is_cleared = true
 	return true
 
-func reset():
+func reset_data():
 	_is_grounded = false
 	_is_cleared = false
 	_is_initialized = false
