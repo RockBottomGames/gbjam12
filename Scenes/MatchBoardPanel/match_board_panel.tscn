@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://q4pqibqydiyx"]
+[gd_scene load_steps=5 format=3 uid="uid://q4pqibqydiyx"]
 
 [ext_resource type="Script" path="res://Scenes/MatchBoardPanel/match_board_panel.gd" id="1_62egk"]
 [ext_resource type="Texture2D" uid="uid://dcrkm4saq5y2u" path="res://Scenes/MatchBoardPanel/Images/background.png" id="1_ekyl5"]
 [ext_resource type="PackedScene" uid="uid://cmwndu6pblh3t" path="res://Scenes/Witch/witch.tscn" id="2_xbe0u"]
+[ext_resource type="PackedScene" uid="uid://cq2ywqr5kx18u" path="res://Scenes/HiddenFallingPiece/hidden_falling_piece.tscn" id="4_p4x5k"]
 
 [node name="MatchBoardPanel" type="MarginContainer"]
 anchors_preset = 15
@@ -27,6 +28,11 @@ _column = 1
 
 [node name="FallingPieces" type="MarginContainer" parent="."]
 layout_mode = 2
+
+[node name="HiddenFallingArea" type="MarginContainer" parent="FallingPieces"]
+layout_mode = 2
+
+[node name="HiddenFallingPiece" parent="FallingPieces/HiddenFallingArea" instance=ExtResource("4_p4x5k")]
 
 [node name="WaitingArea" type="MarginContainer" parent="FallingPieces"]
 layout_mode = 2

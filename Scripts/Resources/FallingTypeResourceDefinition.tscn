@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://d120kmwxa8aes"]
+
+[ext_resource type="Script" path="res://Scripts/Resources/falling_type_resource_definition.gd" id="1_amn6d"]
+
+[node name="FallingTypeResourceDefinition" type="Node"]
+script = ExtResource("1_amn6d")

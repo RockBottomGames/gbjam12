@@ -1,260 +1,333 @@
 @tool
-extends CharacterBody2D
+extends Sprite2D
 class_name FallingPiece
-signal was_cleared(falling_piece: FallingPiece)
+signal parent_update_signal(falling_piece: FallingPiece, update_type: Enums.FALLING_PIECE_UPDATE_TYPE)
+signal group_cleared_signal(pieces_cleared: Array[FallingPiece], result_of: Enums.LANDING_ACTION_RESULT)
 
-@onready var _animation_tree: FallingPieceAnimationTree = $FallingPiece/AnimationTree
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ======================================Variables:=================================================
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-var swapping_tween: Tween = null
-var pot_tween: Tween = null
-var above: FallingPiece = null
-var below: FallingPiece = null 
-var level: int = 0
+# ===============================On Ready Variables================================================
+@onready var _animation_tree: FallingPieceAnimationTree = $AnimationTree
+@onready var _fail_timer: Timer = $FailTimer
+
+# ===============================Exported Variables================================================
+@export var hidden_falling_piece: HiddenFallingPiece = null
+@export var column_index: int = -1
+@export var row_index: int = -1
+
+# Linked List Values
+@export var above: FallingPiece = null
+@export var below: FallingPiece = null
+
+@export var result_when_removed: Enums.ON_REMOVED_RESULT = Enums.ON_REMOVED_RESULT.SUCCESS
+
+# ======================Tried Initialize Before Ready Variables====================================
+@export var _early_initialize_type: Enums.FALLING_PIECE_TYPE = Enums.FALLING_PIECE_TYPE.UNINITIALIZED
+
+# ================================Physics Variables================================================
 var _fractional_position: Vector2 = Vector2.ZERO
-var _is_falling: bool = false
-var _is_swapping: bool = false
-var _is_potting: bool = false
-var _is_swapping_left: bool = false
-var _grounded_pos_y: int = -1
-var _swap_above_time: float = 0.0
-var _delayed_swap: float = 0.0
 
-var is_initialized: bool = false:
-	# Update speed and reset the rotation.
-	get:
-		if _animation_tree == null:
-			return false
-		return _animation_tree.is_initialized
+# ===============================Swapping Variables================================================
+var _swapping_tween: Tween = null
+var _into_pot_tween: Tween = null
+var _into_pot_triggered: bool = false
 
-var is_grounded: bool = false:
-	# Update speed and reset the rotation.
+# Delayed Swap Variables
+var _delayed_swap_time_remaining = 0.0
+var _delayed_swap_is_swapping_left = false
+
+# ==================================Calculated Values==============================================
+var is_ready: bool = false:
 	get:
-		if _animation_tree == null:
-			return false
-		return _animation_tree.is_grounded
+		return _animation_tree != null
+		
+var is_swapping: bool = false:
+	get:
+		return _swapping_tween != null
 
 var is_falling: bool = false:
-	# Update speed and reset the rotation.
 	get:
-		return _is_falling
+		return hidden_falling_piece != null
 
-var is_cleared: bool = false:
-	# Update speed and reset the rotation.
+var is_moving_into_pot: bool = false:
 	get:
-		if _animation_tree == null:
-			return false
-		return _animation_tree.is_cleared
-
-var landing_height: int = 0:
-	# Update speed and reset the rotation.
-	get:
-		return (position.y - Consts.FALLING_PIECE_HEIGHT) as int
-		
-@export var type_to_add: Enums.FALLING_PIECE_TYPE = Enums.FALLING_PIECE_TYPE.UNINITIALIZED
-@export var position_to_set: Vector2 = Vector2.ZERO
+		return _into_pot_tween != null
 
 var type: Enums.FALLING_PIECE_TYPE = Enums.FALLING_PIECE_TYPE.UNINITIALIZED:
-	# Update speed and reset the rotation.
 	get:
-		if _animation_tree == null:
+		if not is_ready:
 			return Enums.FALLING_PIECE_TYPE.UNINITIALIZED
 		return _animation_tree.type
 
-func initialize(new_type: Enums.FALLING_PIECE_TYPE, new_position: Vector2) -> bool:
-	swapping_tween = null
-	pot_tween = null
+var col_pos_x: float = -1.0:
+	get:
+		return Methods.get_column_position_x(column_index)
+
+var landing_height: int = -1:
+	get:
+		return Methods.get_row_position_y(row_index + 1) as int
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# =======================================Methods:==================================================
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+# ===================================Generic Methods===============================================
+func initialize(new_type: Enums.FALLING_PIECE_TYPE, new_column_index: int = -1) -> bool:
+	_swapping_tween = null
+	_into_pot_tween = null
+	_into_pot_triggered = false
 	above = null
-	below = null 
-	level = 0
-	_fractional_position = Vector2.ZERO
-	_is_falling = false
-	_is_swapping = false
-	_is_potting = false
-	_is_swapping_left = false
-	_grounded_pos_y = -1
-	_swap_above_time = 0.0
-	_delayed_swap = 0.0
-	type_to_add = new_type
-	position_to_set = new_position
-	if _animation_tree == null:
+	below = null
+	column_index = new_column_index
+	row_index = -1
+	_delayed_swap_is_swapping_left = false
+	_delayed_swap_time_remaining = 0.0
+	result_when_removed == Enums.ON_REMOVED_RESULT.SUCCESS
+	hidden_falling_piece = null
+	if not is_ready:
+		_early_initialize_type = new_type
 		return false
-	position = new_position as Vector2i
+	_early_initialize_type = Enums.FALLING_PIECE_TYPE.UNINITIALIZED
+	var new_position = get_start_position()
 	_fractional_position = new_position
-	return _animation_tree.intialize(new_type)
+	set_position_from_fractional_position()
+	if new_type == Enums.FALLING_PIECE_TYPE.UNINITIALIZED:
+		_animation_tree.reset_data()
+		return true
+	else:
+		return _animation_tree.intialize(new_type)
 	
-func landing_is_a_clear(landing_on: FallingPiece) -> bool:
-	if landing_on == null:
-		return false
-	if not is_initialized or not landing_on.is_initialized:
-		return false
-	return type == landing_on.type
+func reset_data() -> bool:
+	parent_update_signal.emit(self, Enums.FALLING_PIECE_UPDATE_TYPE.DATA_RESET)
+	return true
 
-### returns true if it was a clear
-func land(landing_on: FallingPiece, destination_height: int) -> Enums.FALLING_PIECE_LANDING_TYPE:
-	_is_falling = false
-	position.y = destination_height
-	_grounded_pos_y = destination_height
-	if landing_on == null:
-		ground(landing_on)
-		return Enums.FALLING_PIECE_LANDING_TYPE.GROUNDED
-	if (type != Enums.FALLING_PIECE_TYPE.POT_TOP
-	and landing_is_a_clear(landing_on)):
-		landing_on.clear()
-		clear()
-		return Enums.FALLING_PIECE_LANDING_TYPE.CLEARED
-	ground(landing_on)
-	return Enums.FALLING_PIECE_LANDING_TYPE.GROUNDED
+func remove_from_tree() -> void:
+	var result = initialize(Enums.FALLING_PIECE_TYPE.UNINITIALIZED)
+	above = null
+	below = null
+	var parent = self.get_parent()
+	if parent != null:
+		parent.remove_child(self)
 
+# ==================================Location Methods===============================================
+func get_start_position() -> Vector2:
+	return Vector2(Methods.get_column_position_x(column_index), Methods.get_row_position_y())
+
+# ===================================Landing Methods===============================================
+# Below are primarily Animation and LL Methods
+func _get_landing_action_result(landing_on: FallingPiece, landing_on_pot: FallingPiece) -> Enums.LANDING_ACTION_RESULT:
+	var piece_def: FallingTypeResourceDefinition = InGame.get_falling_type_resource_definition(type)
+	match(piece_def.landing_action_type):
+		Enums.LANDING_ACTION_TYPE.MATCH_CLEAR:
+			if landing_on == null:
+				return Enums.LANDING_ACTION_RESULT.GROUNDED
+			if landing_on.type == type:
+				return Enums.LANDING_ACTION_RESULT.CLEAR_MATCHED
+			return Enums.LANDING_ACTION_RESULT.GROUNDED
+		Enums.LANDING_ACTION_TYPE.TO_POT_AND_POT_CLEAR:
+			if landing_on_pot != null:
+				return Enums.LANDING_ACTION_RESULT.CLEAR_POT_AND_ABOVE
+			return Enums.LANDING_ACTION_RESULT.CLEAR_SELF_ONLY
+		Enums.LANDING_ACTION_TYPE.TO_POT_CLEAR:
+			if landing_on_pot != null:
+				return Enums.LANDING_ACTION_RESULT.CLEAR_ABOVE_POT_ONLY
+			return Enums.LANDING_ACTION_RESULT.CLEAR_SELF_ONLY
+	return Enums.LANDING_ACTION_RESULT.GROUNDED
+
+# Default Falling Piece Methods:
 func ground(landing_on: FallingPiece) -> bool:
-	if _animation_tree == null:
+	if not is_ready:
 		return false
 	if _animation_tree.ground():
+		if landing_on == null:
+			row_index = 0
+		else:
+			row_index = landing_on.row_index + 1
 		if landing_on != null:
 			landing_on.above = self
 			below = landing_on
+		_fractional_position.y = Methods.get_row_position_y(row_index)
 		return true
 	return false
 
-func clear() -> bool:
-	if _animation_tree == null:
-		return false
-	if below != null:
+func delink_node() -> void:
+	if above != null:
+		# loop through linked list updating row_indices.
+		var above_loop = above
+		while(above_loop != null):
+			above_loop.row_index = above_loop.row_index - 1
+			above_loop = above_loop.above
+		# Middle Node, reconnect linked list
+		# set above's below to below delinked node (self)
+		above.below = below
+		# set below's above to above delinked node (self)
+		below.above = above
+	elif below != null:
+		# Middle Node, reconnect linked list
+		# set below's above to above delinked node (self)
 		below.above = null
-		below = null
+	# clear references to list from self
+	parent_update_signal.emit(self, Enums.FALLING_PIECE_UPDATE_TYPE.CLEARED)
+
+func clear() -> bool:
+	if not is_ready:
+		return false
+	delink_node()
 	return _animation_tree.clear()
-	
+
+# Partial pot Methods:
 func _after_pot() -> void:
-	pot_tween = null
-	
+	_into_pot_tween = null
+
 func _queue_into_pot() -> Tween:
-	_is_potting = true
-	if pot_tween != null:
+	if is_moving_into_pot:
 		return
-	pot_tween = get_tree().create_tween()
-	pot_tween.tween_property(self, "_fractional_position:y", Consts.FALLING_PIECE_HEIGHT, Consts.QUEUE_INTO_POT_TIME).as_relative()
-	pot_tween.tween_callback(_after_pot)
+	_into_pot_tween = get_tree().create_tween()
+	_into_pot_tween.tween_property(self, "_fractional_position:y", Consts.ROW_HEIGHT, Consts.QUEUE_INTO_POT_TIME).as_relative()
+	_into_pot_tween.tween_callback(_after_pot)
 	if above != null:
 		# return the last called queue_into_pot
 		var tween = above._queue_into_pot()
 		if tween != null:
 			return tween
-	return pot_tween
-	
-func _animate_into_pot() -> Tween:
-	if _animation_tree == null:
+	return _into_pot_tween
+
+func _animate_into_pot(pot: FallingPiece) -> Tween:
+	if not is_ready:
 		return null
 	_animation_tree.into_pot()
 	var type_index = type as int
 	if type_index < 0 or type_index > 3:
-		pot_tween = get_tree().create_tween()
-		pot_tween.tween_property(self, "_fractional_position:y", 0.01, 0.01).as_relative()
-		pot_tween.tween_callback(_after_pot)
-		return pot_tween
-	pot_tween = get_tree().create_tween()
-	pot_tween.tween_property(self, "_fractional_position:y", Consts.INTO_POT_HEIGHT, Consts.INTO_POT_TIME).as_relative()
-	pot_tween.tween_callback(_after_pot)
-	return pot_tween
-	
-func into_pot() -> Tween:
-	_is_potting = true
-	# to avoid confusion of using pot_tween, instead use variable.
-	var into_pot_tween = _animate_into_pot()
-	if into_pot_tween == null:
-		print("above is null")
+		_into_pot_tween = get_tree().create_tween()
+		_into_pot_tween.tween_property(self, "_fractional_position:y", Methods.get_row_position_y(pot.row_index + 1), Consts.QUEUE_INTO_POT_TIME)
+		#_into_pot_tween.tween_property(self, "_fractional_position:y", Methods.get_row_position_y(row_index), Consts.INTO_POT_TIME)
+		_into_pot_tween.tween_callback(_after_pot)
+		return _into_pot_tween
+	_into_pot_tween = get_tree().create_tween()
+	_into_pot_tween.tween_property(self, "_fractional_position:y", Methods.get_row_position_y(pot.row_index + 1) + Consts.INTO_POT_HEIGHT, Consts.INTO_POT_TIME)
+	_into_pot_tween.tween_callback(_after_pot)
+	return _into_pot_tween
+
+func into_pot(pot: FallingPiece) -> Tween:
+	var return_tween = null
+	return_tween = _animate_into_pot(pot)
+	if return_tween == null:
 		return null
 	if above != null:
-		# set above's below to pot
-		above.below = below
-		# set pot's above to self's above
-		below.above = above
 		# return the longer tween of the above pot's time
 		var tween = above._queue_into_pot()
 		if tween != null:
-			return tween
-		return into_pot_tween
-	# set pot's above to null
-	print("above is null")
-	below.above = null
-	return into_pot_tween
+			return_tween = tween
+	delink_node()
+	return return_tween
 
-func release_data() -> bool:
-	if _animation_tree == null:
-		return false
-	was_cleared.emit(self)
-	_animation_tree.reset()
-	if swapping_tween != null:
-		swapping_tween.kill()
-		swapping_tween = null
-	_is_potting = false
-	_is_falling = false
-	above = null
-	below = null 
-	level = 0
-	return true
+# Full pot Methods:
+func _after_move_into_pot():
+	parent_update_signal.emit(self, Enums.FALLING_PIECE_UPDATE_TYPE.MOVE_INTO_POT_FINISHED)
+	_into_pot_triggered = false
 
-func begin_falling():
-	_is_falling = true
+func _move_into_pot_callable(pot: FallingPiece, clear_pot: bool) -> Callable:
+	return func ():
+		if pot.above == null or pot.above.above == null:
+			if pot.above != null:
+				var tween = pot.above.into_pot(pot)
+			if clear_pot:
+				pot.clear()
+			_after_move_into_pot()
+			return
+		var tween = pot.above.into_pot(pot)
+		if tween != null:
+			tween.tween_callback(_move_into_pot_callable(pot, clear_pot))
 
-func pause_falling():
-	_is_falling = false
-
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	_swap_above_time = 0.0
-	if type_to_add != Enums.FALLING_PIECE_TYPE.UNINITIALIZED:
-		initialize(type_to_add, position_to_set)
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _physics_process(_delta: float) -> void:
-	position = _fractional_position
-	var new_velocity = Vector2.ZERO
-	if _is_potting:
-		position = _fractional_position as Vector2i
+func _move_above_pot_into_pot(pot: FallingPiece, clear_pot = true):
+	if _into_pot_triggered:
 		return
-	elif is_grounded:
-		position.y = _grounded_pos_y
-	if _delayed_swap > 0:
-		_delayed_swap -= _delta
-		if _delayed_swap <= 0:
-			swap(_is_swapping_left)
-	if _is_swapping and _swap_above_time > 0:
-		_swap_above_time -= _delta
-		if _swap_above_time <= 0:
-			_on_swap_above_time()
-	if !_is_falling:
-		_fractional_position = position
-		position = _fractional_position as Vector2i
-		return
-	new_velocity.y = Consts.FASTEST_FALLING_SPEED if Input.is_action_pressed("ui_down") else InGame.falling_speed
-	velocity = new_velocity
-	move_and_slide()
-	_fractional_position = position
-	position = _fractional_position as Vector2i
+	_into_pot_triggered = true
+	return _move_into_pot_callable(pot, clear_pot).call()
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta: float) -> void:
-	pass
+### returns true if it was a clear
+func land(landing_on: FallingPiece, landing_on_pot: FallingPiece) -> Enums.LANDING_ACTION_RESULT:
+	end_falling()
+	ground(landing_on)
+	var landing_result = _get_landing_action_result(landing_on, landing_on_pot)
+	match(landing_result):
+		Enums.LANDING_ACTION_RESULT.CLEAR_MATCHED:
+			clear()
+			var below_loop = below
+			while (below_loop != null and below_loop.type == type):
+				below_loop.clear()
+				below_loop = below_loop.below
+		Enums.LANDING_ACTION_RESULT.CLEAR_POT_AND_ABOVE:
+			result_when_removed = Enums.ON_REMOVED_RESULT.NO_EFFECT
+			_move_above_pot_into_pot(landing_on_pot)
+		Enums.LANDING_ACTION_RESULT.CLEAR_SELF_ONLY:
+			result_when_removed = Enums.ON_REMOVED_RESULT.NO_EFFECT
+			clear()
+		Enums.LANDING_ACTION_RESULT.CLEAR_ABOVE_POT_ONLY:
+			result_when_removed = Enums.ON_REMOVED_RESULT.NO_EFFECT
+			_move_above_pot_into_pot(landing_on_pot, false)
+		_:
+			pass
+	return landing_result
+# =================================Fail Column Methods=============================================
+func _on_fail_timer_timeout() -> void:
+	if below != null:
+		below.fail()
+	clear()
+	
+func fail() -> void:
+	result_when_removed = Enums.ON_REMOVED_RESULT.NEGATIVE_EFFECT
+	if below == null:
+		parent_update_signal.emit(self, Enums.FALLING_PIECE_UPDATE_TYPE.FAIL_COMPLETE)
+	_fail_timer.start()
+# ===================================Physics Methods===============================================
+# These are functions dealing with placing self
+
+func set_position_from_fractional_position() -> void:
+	position = Vector2(floor(_fractional_position.x), ceil(_fractional_position.y))
+
+func begin_falling(new_hidden_falling_piece):
+	hidden_falling_piece = new_hidden_falling_piece
+
+func end_falling():
+	hidden_falling_piece = null
 
 func _after_swap() -> void:
-	_is_swapping = false
-	swapping_tween = null
+	_swapping_tween = null
 
-func swap(left: bool, delay: float = 0.0) -> void:
-	if swapping_tween != null:
+func swap(should_swap_left: bool, delay: float = 0.0) -> void:
+	if is_swapping or column_index < 0:
 		return
-	_is_swapping_left = left
 	if delay > 0:
-		_delayed_swap = delay
+		_delayed_swap_time_remaining = delay
+		_delayed_swap_is_swapping_left = should_swap_left
 		return
-	var swap_relative_x = (-Consts.COL_WIDTH) if left else Consts.COL_WIDTH
-	swapping_tween = get_tree().create_tween()
-	swapping_tween.tween_property(self, "_fractional_position:x", swap_relative_x, Consts.WITCH_SWAP_TIME).as_relative()
-	swapping_tween.tween_callback(_after_swap)
-	_is_swapping = true
-	_swap_above_time = Consts.SWAP_TOP_DELAY
-
-func _on_swap_above_time() -> void:
-	_is_swapping = false
-	_swap_above_time = 0.0
+	var end_column_index = column_index + (-1 if should_swap_left else 1)
+	var end_position_x = Methods.get_column_position_x(end_column_index)
+	_swapping_tween = get_tree().create_tween()
+	_swapping_tween.tween_property(self, "_fractional_position:x", end_position_x, Consts.WITCH_SWAP_TIME)
+	_swapping_tween.tween_callback(_after_swap)
+	column_index = end_column_index
 	if above != null:
-		above.swap(_is_swapping_left)
+		above.swap(should_swap_left, Consts.SWAP_ABOVE_DELAY)
+
+# ==================================Other Generic Methods==========================================
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	if _early_initialize_type != Enums.FALLING_PIECE_TYPE.UNINITIALIZED:
+		initialize(_early_initialize_type, column_index)
+		
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _physics_process(delta: float) -> void:
+	if is_falling:
+		# if currently tracking a hidden_falling_piece, then set position.y
+		# to integer value
+		_fractional_position.y = hidden_falling_piece.position.y
+	if _delayed_swap_time_remaining > 0:
+		_delayed_swap_time_remaining -= delta
+		if _delayed_swap_time_remaining <= 0:
+			_delayed_swap_time_remaining = 0
+			swap(_delayed_swap_is_swapping_left)
+	position = Vector2(ceil(_fractional_position.x), floor(_fractional_position.y))
